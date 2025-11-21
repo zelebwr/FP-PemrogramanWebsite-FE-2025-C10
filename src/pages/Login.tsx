@@ -1,4 +1,10 @@
 import * as React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import api from "@/api/axios";
+import { useAuthStore, type AuthState } from "@/store/authStore";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +28,41 @@ const footerLinkStyles =
   "h-auto p-0 text-[#F59E0B] hover:text-amber-600 subtle-semibold";
 
 export default function LoginPage() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const setToken = useAuthStore((state: AuthState) => state.setToken);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form Login Disubmit");
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const response = await api.post("/api/auth/login", {
+        email,
+        password,
+      });
+
+      const token = response.data.data?.access_token;
+
+      if (!token) {
+        throw new Error("Token tidak ditemukan dalam respon server.");
+      }
+
+      setToken(token);
+      navigate("/profile");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const errorMessage =
+        error.response?.data?.message || "Email atau password salah.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,6 +96,10 @@ export default function LoginPage() {
                 id="email"
                 placeholder="you@example.com"
                 className={inputStyles}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -70,6 +112,10 @@ export default function LoginPage() {
                 id="password"
                 placeholder="••••••••"
                 className={inputStyles}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -79,8 +125,21 @@ export default function LoginPage() {
               </Button>
             </div>
 
-            <Button type="submit" className={submitButtonStyles}>
-              Login
+            {error && (
+              <Typography
+                variant="small"
+                className="text-red-600 text-center font-medium"
+              >
+                {error}
+              </Typography>
+            )}
+
+            <Button
+              type="submit"
+              className={submitButtonStyles}
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Login"}
             </Button>
           </form>
         </CardContent>

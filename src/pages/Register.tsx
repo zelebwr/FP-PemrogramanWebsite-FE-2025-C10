@@ -1,4 +1,9 @@
 import * as React from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import api from "@/api/axios";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,13 +27,48 @@ const footerLinkStyles =
   "h-auto p-0 text-[#F59E0B] hover:text-amber-600 subtle-semibold";
 
 export default function RegisterPage() {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form Register Disubmit");
+    setError(null);
+
+    if (password !== confirmPassword) {
+      setError("Password dan Konfirmasi Password tidak cocok!");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+
+      await api.post("/api/auth/register", formData);
+
+      navigate("/login");
+    } catch (err) {
+      const error = err as AxiosError<{ message: string }>;
+      const errorMessage =
+        error.response?.data?.message || "Registrasi gagal. Silakan coba lagi.";
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-linear-to-br from-[#B8D4FF] to-[#FFEEB2] p-4">
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-[#B8D4FF] to-[#FFEEB2] p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="items-center pt-8">
           <Avatar className="mx-auto size-16">
@@ -58,6 +98,10 @@ export default function RegisterPage() {
                 id="username"
                 placeholder="example"
                 className={inputStyles}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -70,6 +114,10 @@ export default function RegisterPage() {
                 id="email"
                 placeholder="you@example.com"
                 className={inputStyles}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -82,6 +130,10 @@ export default function RegisterPage() {
                 id="password"
                 placeholder="••••••••"
                 className={inputStyles}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -94,6 +146,10 @@ export default function RegisterPage() {
                 id="confirm-password"
                 placeholder="••••••••"
                 className={inputStyles}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                disabled={isLoading}
+                required
               />
             </div>
 
@@ -103,8 +159,21 @@ export default function RegisterPage() {
               </Button>
             </div>
 
-            <Button type="submit" className={submitButtonStyles}>
-              Register
+            {error && (
+              <Typography
+                variant="small"
+                className="text-red-600 text-center font-medium"
+              >
+                {error}
+              </Typography>
+            )}
+
+            <Button
+              type="submit"
+              className={submitButtonStyles}
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Register"}
             </Button>
           </form>
         </CardContent>
