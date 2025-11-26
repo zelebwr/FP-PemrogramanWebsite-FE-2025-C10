@@ -13,11 +13,11 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
-    allowedHosts: ["http://dev-wordit.it-its.id", "http://wordit.it-its.id"],
+    allowedHosts: ["dev-wordit.it-its.id", "wordit.it-its.id"],
   },
   preview: {
     host: true,
     port: 3001,
-    allowedHosts: ["http://dev-wordit.it-its.id", "http://wordit.it-its.id"],
+    allowedHosts: ["dev-wordit.it-its.id", "wordit.it-its.id"],
   },
 });
