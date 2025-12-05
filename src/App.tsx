@@ -10,8 +10,8 @@ import CreateProject from "./pages/CreateProject";
 import EditQuiz from "./pages/EditQuiz";
 import Quiz from "./pages/Quiz";
 import ProtectedRoute from "./routes/ProtectedRoutes";
-import CreateAnagram from "./pages/Anagram/CreateAnagram";
-import Anagram from "./pages/Anagram/Anagram";
+import CreateAnagram from "./pages/anagram/CreateAnagram";
+import Anagram from "./pages/anagram/Anagram";
 
 function App() {
   return (

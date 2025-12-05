@@ -145,6 +145,10 @@ const CreateAnagram = () => {
       const questionsDataPayload: QuestionDataPayload[] = [];
 
       questions.forEach((q, index) => {
+        if (q.imageFile) {
+          formData.append("files_to_upload", q.imageFile);
+        }
+
         formData.append("files_to_upload", q.imageFile as File);
 
         questionsDataPayload.push({
