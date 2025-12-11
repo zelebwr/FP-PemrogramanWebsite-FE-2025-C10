@@ -349,7 +349,7 @@ function CreateMazeChase() {
                   </Label>
                   <Input
                     placeholder="Enter the name of your mysterious maze..."
-                    className="bg-black/70 border-gray-700/50 text-gray-300 rounded-xl px-4 py-4 placeholder:text-gray-600 focus:border-[#c9a961]/50 transition-all"
+                    className="bg-black/70 border border-gray-700/50 text-gray-300 rounded-xl px-4 py-4 placeholder:text-gray-600 transition-all focus:border-[#c9a961] focus:ring-0 text-sm sm:text-base"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
@@ -366,7 +366,7 @@ function CreateMazeChase() {
                   </Label>
                   <textarea
                     placeholder="Describe the dark secrets and challenges within..."
-                    className="w-full bg-black/70 border border-gray-700/50 text-gray-300 rounded-xl px-4 py-4 placeholder:text-gray-600 focus:border-[#c9a961]/50 transition-all resize-none"
+                    className="w-full bg-black/70 border border-gray-700/50 text-gray-300 rounded-xl px-4 py-4 placeholder:text-gray-600 focus:border-[#c9a961]/50 transition-all resize-none text-sm sm:text-base placeholder:text-sm sm:placeholder:text-base"
                     rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -388,12 +388,17 @@ function CreateMazeChase() {
                       onClick={() => setShowMapDropdown(!showMapDropdown)}
                       className="w-full flex items-center justify-between px-4 py-4 bg-black/70 border border-gray-700/50 rounded-xl hover:border-[#c9a961]/50 transition-all text-gray-300"
                     >
-                      <span>
-                        {mapId
-                          ? AVAILABLE_MAPS.find((m) => m.id === mapId)?.name ||
-                            "Select a map"
-                          : "Choose your labyrinth..."}
+                      <span className="text-sm sm:text-base">
+                        {mapId ? (
+                          AVAILABLE_MAPS.find((m) => m.id === mapId)?.name ||
+                          "Select a map"
+                        ) : (
+                          <span className="text-gray-600 text-sm sm:text-base">
+                            Choose your labyrinth...
+                          </span>
+                        )}
                       </span>
+
                       <ChevronDown
                         size={20}
                         className={`text-[#c9a961] transition-transform duration-300 ${showMapDropdown ? "rotate-180" : ""}`}
@@ -402,7 +407,7 @@ function CreateMazeChase() {
 
                     {showMapDropdown && (
                       <div className="backdrop-blur-2xl bg-black/80 border border-gray-700/50 rounded-xl shadow-[0_8px_32px_0_rgba(0,0,0,0.9)] overflow-hidden">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4 sm:p-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 p-4 sm:p-5">
                           {AVAILABLE_MAPS.map((map) => (
                             <button
                               key={map.id}
@@ -411,7 +416,7 @@ function CreateMazeChase() {
                                 setMapId(map.id);
                                 setShowMapDropdown(false);
                               }}
-                              className={`group overflow-hidden rounded-xl border-2 transition-all duration-300 transform hover:scale-105 ${
+                              className={`group overflow-hidden rounded-xl border-2 transition-all duration-300 transform hover:scale-105 active:scale-105 focus:scale-105 ${
                                 mapId === map.id
                                   ? "border-[#c9a961] shadow-lg ring-2 ring-[#c9a961]/30"
                                   : "border-gray-700/50 hover:border-[#c9a961]/60 hover:shadow-lg"
@@ -448,9 +453,12 @@ function CreateMazeChase() {
                 </div>
 
                 <div className="space-y-3">
+                  <Label className="text-gray-400 font-medium text-base">
+                    Thumbnail Image <span className="text-[#c9a961]">*</span>
+                  </Label>
+
                   <Dropzone
                     required
-                    label="Thumbnail Image"
                     allowedTypes={["image/png", "image/jpeg"]}
                     maxSize={2 * 1024 * 1024}
                     onChange={(file) => setThumbnail(file)}
@@ -503,32 +511,20 @@ function CreateMazeChase() {
                   formErrors[`questions.${qIndex}.questionText`] ||
                   formErrors[`questions.${qIndex}.answers`] ||
                   formErrors[`questions.${qIndex}.correct`]
-                    ? "bg-red-950/40 border-red-700/50 hover:border-red-600/50"
+                    ? "bg-black/60 border-gray-700/50 hover:border-gray-700/60"
                     : "bg-black/60 border-gray-700/50 hover:border-[#c9a961]/30"
                 }`}
               >
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`font-bold px-4 py-2 rounded-xl shadow-lg transition-colors ${
-                        formErrors[`questions.${qIndex}.questionText`] ||
-                        formErrors[`questions.${qIndex}.answers`] ||
-                        formErrors[`questions.${qIndex}.correct`]
-                          ? "bg-red-600 text-white"
-                          : "bg-gradient-to-br from-[#c9a961] to-[#a08347] text-gray-900"
-                      }`}
+                      className={`font-bold px-4 py-2 rounded-xl shadow-lg transition-colors bg-gradient-to-br from-[#c9a961] to-[#a08347] text-gray-900`}
                     >
                       Q{qIndex + 1}
                     </div>
                     <Typography
                       variant="p"
-                      className={`font-semibold ${
-                        formErrors[`questions.${qIndex}.questionText`] ||
-                        formErrors[`questions.${qIndex}.answers`] ||
-                        formErrors[`questions.${qIndex}.correct`]
-                          ? "text-red-400"
-                          : "text-gray-300"
-                      }`}
+                      className={`font-semibold text-gray-300`}
                     >
                       Challenge {qIndex + 1}
                     </Typography>
@@ -552,9 +548,9 @@ function CreateMazeChase() {
                   </Label>
                   <textarea
                     placeholder="What mystery lies ahead..."
-                    className={`w-full rounded-xl px-4 py-4 placeholder:text-gray-600 transition-all resize-none ${
+                    className={`w-full rounded-xl px-4 py-4 placeholder:text-gray-600 transition-all resize-none text-sm sm:text-base placeholder:text-sm sm:placeholder:text-base ${
                       formErrors[`questions.${qIndex}.questionText`]
-                        ? "bg-red-950/50 border-2 border-red-600 text-red-100 focus:border-red-500"
+                        ? "bg-black/60 border-gray-700/50"
                         : "bg-black/70 border border-gray-700/50 text-gray-300 focus:border-[#c9a961]/50"
                     }`}
                     rows={3}
@@ -564,7 +560,7 @@ function CreateMazeChase() {
                     }
                   />
                   {formErrors[`questions.${qIndex}.questionText`] && (
-                    <p className="text-red-400 text-sm flex items-center gap-1">
+                    <p className="text-gray-300 text-sm flex items-center gap-1">
                       <span>⚠</span>{" "}
                       {formErrors[`questions.${qIndex}.questionText`]}
                     </p>
@@ -575,17 +571,12 @@ function CreateMazeChase() {
                   className={`space-y-4 p-6 rounded-2xl border transition-all ${
                     formErrors[`questions.${qIndex}.answers`] ||
                     formErrors[`questions.${qIndex}.correct`]
-                      ? "bg-red-950/30 border-red-700/50"
+                      ? "bg-black/60 border-gray-700/50"
                       : "bg-black/40 border-gray-700/30"
                   }`}
                 >
                   <Label
-                    className={`font-medium flex items-center gap-2 ${
-                      formErrors[`questions.${qIndex}.answers`] ||
-                      formErrors[`questions.${qIndex}.correct`]
-                        ? "text-red-400"
-                        : "text-gray-400"
-                    }`}
+                    className={`font-medium flex items-center gap-2 text-gray-400`}
                   >
                     Answer Options <span className="text-[#c9a961]">*</span>
                     <span className="text-xs text-gray-600">
@@ -597,10 +588,10 @@ function CreateMazeChase() {
                       <div key={aIndex} className="flex items-center gap-3">
                         <Input
                           placeholder={`Option ${aIndex + 1}...`}
-                          className={`flex-1 rounded-xl px-4 py-3 placeholder:text-gray-600 transition-all ${
+                          className={`flex-1 rounded-xl px-4 py-3 placeholder:text-gray-600 transition-all text-sm sm:text-base placeholder:text-sm sm:placeholder:text-base ${
                             formErrors[`questions.${qIndex}.answers`] ||
                             formErrors[`questions.${qIndex}.answers.${aIndex}`]
-                              ? "bg-red-950/50 border-2 border-red-600 text-red-100 focus:border-red-500"
+                              ? "bg-black/60 border-2 border-gray-700/50 text-gray-300 focus:border-gray-700"
                               : "bg-black/70 border border-gray-700/50 text-gray-300 focus:border-[#c9a961]/50"
                           }`}
                           value={a.text}
@@ -632,7 +623,7 @@ function CreateMazeChase() {
                               }`}
                             >
                               {q.answers[aIndex].isCorrect
-                                ? "✓ Correct"
+                                ? "Correct"
                                 : "Correct"}
                             </Label>
                           </div>
@@ -642,15 +633,19 @@ function CreateMazeChase() {
                   </div>
                   {(formErrors[`questions.${qIndex}.answers`] ||
                     formErrors[`questions.${qIndex}.correct`]) && (
-                    <div className="mt-3 p-3 bg-red-950/50 rounded-lg border border-red-700/50">
+                    <div className="mt-3 p-3 bg-black/60 rounded-lg border border-gray-700/50">
                       {formErrors[`questions.${qIndex}.answers`] && (
-                        <p className="text-red-400 text-sm flex items-center gap-1">
+                        <p
+                          className={`${formErrors[`questions.${qIndex}.answers`] === "Minimum 2 answer options required" ? "text-red-400" : "text-gray-300"} text-sm flex items-center gap-1`}
+                        >
                           <span>⚠</span>{" "}
                           {formErrors[`questions.${qIndex}.answers`]}
                         </p>
                       )}
                       {formErrors[`questions.${qIndex}.correct`] && (
-                        <p className="text-red-400 text-sm flex items-center gap-1">
+                        <p
+                          className={`${formErrors[`questions.${qIndex}.correct`] === "Must mark one answer as correct" ? "text-red-400" : "text-gray-300"} text-sm flex items-center gap-1`}
+                        >
                           <span>⚠</span>{" "}
                           {formErrors[`questions.${qIndex}.correct`]}
                         </p>
@@ -690,12 +685,16 @@ function CreateMazeChase() {
                 </div>
                 <Switch
                   checked={settings.isQuestionRandomized}
-                  onCheckedChange={(val: boolean) =>
+                  onCheckedChange={(val) =>
                     setSettings((prev) => ({
                       ...prev,
                       isQuestionRandomized: val,
                     }))
                   }
+                  className="
+                      data-[state=checked]:bg-[#c9a961]
+                      data-[state=checked]:border-[#c9a961]
+                    "
                 />
               </div>
 
@@ -710,12 +709,16 @@ function CreateMazeChase() {
                 </div>
                 <Switch
                   checked={settings.isAnswerRandomized}
-                  onCheckedChange={(val: boolean) =>
+                  onCheckedChange={(val) =>
                     setSettings((prev) => ({
                       ...prev,
                       isAnswerRandomized: val,
                     }))
                   }
+                  className="
+                      data-[state=checked]:bg-[#c9a961]
+                      data-[state=checked]:border-[#c9a961]
+                    "
                 />
               </div>
 
