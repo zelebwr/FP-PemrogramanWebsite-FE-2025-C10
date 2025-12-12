@@ -38,11 +38,8 @@ type GameApiResponse = {
   name: string;
   description: string;
   thumbnail_image: string | null;
-  game_template: {
-    id: string;
-    slug: string;
-    name: string;
-  };
+  game_template_name: string;
+  game_template_slug: string;
   total_liked: number;
   total_played: number;
   creator_id: string;
@@ -129,8 +126,8 @@ export default function HomePage() {
                 name: g.name,
                 description: g.description,
                 thumbnail_image: g.thumbnail_image,
-                game_template_name: g.game_template?.name || "",
-                game_template_slug: g.game_template?.slug || "",
+                game_template_name: g.game_template_name || "",
+                game_template_slug: g.game_template_slug || "",
                 total_liked: g.total_liked || 0,
                 total_played: g.total_played || 0,
                 creator_id: g.creator_id,
