@@ -28,6 +28,11 @@ import CreateSlidingPuzzle from "./pages/sliding-puzzle/CreateSlidingPuzzle";
 import EditSlidingPuzzle from "./pages/sliding-puzzle/EditSlidingPuzzle";
 import PlaySlidingPuzzle from "./pages/sliding-puzzle/PlaySlidingPuzzle";
 
+import JeopardyLobby from "./pages/jeopardy/JeopardyLobby"; // Add this
+import JeopardyBoard from "./pages/jeopardy/JeopardyBoard"; // Add this
+import CreateJeopardy from "./pages/jeopardy/CreateJeopardy"; // Add this
+import EditJeopardy from "./pages/jeopardy/CreateJeopardy";
+
 function App() {
   return (
     <>
@@ -48,6 +53,8 @@ function App() {
           path="/sliding-puzzle/play/:id"
           element={<PlaySlidingPuzzle />}
         />
+        <Route path="/jeopardy/play/:id/setup" element={<JeopardyLobby />} />
+        <Route path="/jeopardy/play/:id" element={<JeopardyBoard />} />
 
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
@@ -83,6 +90,8 @@ function App() {
             path="/sliding-puzzle/edit/:id"
             element={<EditSlidingPuzzle />}
           />
+          <Route path="/create-jeopardy" element={<CreateJeopardy />} />
+          <Route path="/jeopardy/edit/:id" element={<EditJeopardy />} />
         </Route>
       </Routes>
     </>
