@@ -1,33 +1,30 @@
-// src/api/jeopardy/index.ts
 import api from "@/api/axios";
 
-// Base URL for this game type
 const BASE_URL = "/api/game/game-type/jeopardy";
 
 export const jeopardyApi = {
-  // Create a new game (FormData required for file upload)
+  // [POST] Create Game
   create: async (formData: FormData) => {
     return await api.post(BASE_URL, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
 
-  // Get game details (Metadata + JSON)
-  // Used by Editor to load data and Lobby to show title
+  // [GET] Get Detail (For Editor - usually contains game_json wrapper)
   getDetail: async (id: string) => {
     return await api.get(`${BASE_URL}/${id}`);
   },
 
-  // The "Play" endpoint for the Operator
-  // According to your brief, this returns the FULL data (questions + answers)
+  // [GET] Play (For Board - usually returns flat settings/rounds)
   play: async (id: string) => {
-    // Using 'private' endpoint as Operator needs to see answers
-    return await api.get(`${BASE_URL}/${id}/play`);
+    // Try public first, you might need to handle private if user is creator
+    return await api.get(`${BASE_URL}/${id}/play/public`);
   },
 
-  // Helper to increment play count on exit
-  submitPlayCount: async (gameId: string) => {
-    // Note: Adjust endpoint if backend uses a different path for generic counters
-    return await api.post(`/api/game/play-count`, { game_id: gameId });
+  // [POST] Play Count (For Exit Button)
+  submitPlayCount: async (id: string) => {
+    return await api.post(`/api/game/play-count`, { game_id: id });
   },
+
+  endGame: (id: string) => api.post(`/api/game/game-type/jeopardy/${id}/end`),
 };

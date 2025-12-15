@@ -1,47 +1,54 @@
-// src/pages/jeopardy/types.ts
-
+// 1. Clue Interface
 export interface JeopardyClue {
   id: string;
-  pointValue: number; // e.g., 200, 400, 600
+  value: number;
   question: string;
-  answer: string; // Visible only to the Operator
-  isDailyDouble: boolean;
-  isPlayed?: boolean; // UI state to track if clicked
+  answer: string;
+  is_daily_double: boolean;
+
+  // FIXED: Added this field so the Board can read the image path
+  media_url?: string | null;
+
+  // Backend Mapping (for creation)
+  media_image_index?: number | null;
+
+  // UI Only (for upload previews)
+  media_file?: File | null;
+  media_preview?: string;
+  isPlayed?: boolean;
 }
 
+// 2. Category Interface
 export interface JeopardyCategory {
   id: string;
   title: string;
   clues: JeopardyClue[];
 }
 
+// 3. Round Interface
 export interface JeopardyRound {
   id: string;
-  name: string; // e.g., "Round 1", "Double Jeopardy"
+  name: string;
+  type: "jeopardy" | "double" | "final";
   categories: JeopardyCategory[];
 }
 
+// 4. Settings Interface
 export interface JeopardySettings {
-  maxTeams: number;
-  timeLimitPerClue: number; // in seconds
-  allowDailyDouble: boolean;
+  max_teams: number;
+  time_limit_per_clue: number;
+  allow_daily_double: boolean;
+  double_jeopardy_multiplier: number;
+  starting_score: number;
 }
 
-// The full structure stored in the database "game_json" column
+// 5. Game Data Container
 export interface JeopardyGameData {
   settings: JeopardySettings;
   rounds: JeopardyRound[];
 }
 
-// The API Response structure
-export interface GameDetail {
-  id: string;
-  name: string;
-  description: string;
-  thumbnail_image: string | null;
-  game_json: JeopardyGameData;
-}
-
+// 6. Team Interface
 export interface Team {
   id: number;
   name: string;
